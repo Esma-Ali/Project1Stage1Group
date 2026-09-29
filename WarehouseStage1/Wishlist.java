@@ -17,6 +17,7 @@ public class Wishlist implements Serializable {
             return false;
         }
 
+        // Update the quantity if this product is already in the wishlist.
         for (WishlistItem item : items) {
             if (item.getProduct().getId().equals(product.getId())) {
                 item.setQuantity(quantity);
