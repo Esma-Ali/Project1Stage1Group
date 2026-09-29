@@ -4,10 +4,10 @@ import java.io.*;
 public class UserInterface {
   private static UserInterface userInterface;
   private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-  private static Library library;
+  private static Warehouse warehouse;
   private static final int EXIT = 0;
   private static final int ADD_MEMBER = 1;
-  private static final int ADD_BOOKS = 2;
+  private static final int ADD_PRODUCTS = 2;
   private static final int ISSUE_BOOKS = 3;
   private static final int RETURN_BOOKS = 4;
   private static final int RENEW_BOOKS = 5;
@@ -17,15 +17,15 @@ public class UserInterface {
   private static final int PROCESS_HOLD = 9;
   private static final int GET_TRANSACTIONS = 10;
   private static final int SHOW_MEMBERS = 11;
-  private static final int SHOW_BOOKS = 12;
+  private static final int SHOW_PRODUCTS = 12;
   private static final int SAVE = 13;
   private static final int RETRIEVE = 14;
   private static final int HELP = 15;
   private UserInterface() {
-    if (yesOrNo("Look for saved data and  use it?")) {
+    if (yesOrNo("Look for saved data and use it?")) {
       retrieve();
     } else {
-      library = Library.instance();
+      warehouse = Warehouse.instance();
     }
   }
   public static UserInterface instance() {
@@ -97,19 +97,19 @@ public class UserInterface {
     System.out.println("Enter a number between 0 and 12 as explained below:");
     System.out.println(EXIT + " to Exit\n");
     System.out.println(ADD_MEMBER + " to add a member");
-    System.out.println(ADD_BOOKS + " to  add books");
-    System.out.println(ISSUE_BOOKS + " to  issue books to a  member");
-    System.out.println(RETURN_BOOKS + " to  return books ");
-    System.out.println(RENEW_BOOKS + " to  renew books ");
-    System.out.println(REMOVE_BOOKS + " to  remove books");
-    System.out.println(PLACE_HOLD + " to  place a hold on a book");
-    System.out.println(REMOVE_HOLD + " to  remove a hold on a book");
-    System.out.println(PROCESS_HOLD + " to  process holds");
-    System.out.println(GET_TRANSACTIONS + " to  print transactions");
-    System.out.println(SHOW_MEMBERS + " to  print members");
-    System.out.println(SHOW_BOOKS + " to  print books");
-    System.out.println(SAVE + " to  save data");
-    System.out.println(RETRIEVE + " to  retrieve");
+    System.out.println(ADD_PRODUCTS + " to add products");
+    System.out.println(ISSUE_BOOKS + " to issue books to a member");
+    System.out.println(RETURN_BOOKS + " to return books ");
+    System.out.println(RENEW_BOOKS + " to renew books ");
+    System.out.println(REMOVE_BOOKS + " to remove books");
+    System.out.println(PLACE_HOLD + " to place a hold on a book");
+    System.out.println(REMOVE_HOLD + " to remove a hold on a book");
+    System.out.println(PROCESS_HOLD + " to process holds");
+    System.out.println(GET_TRANSACTIONS + " to print transactions");
+    System.out.println(SHOW_MEMBERS + " to print members");
+    System.out.println(SHOW_PRODUCTS + " to print products");
+    System.out.println(SAVE + " to save data");
+    System.out.println(RETRIEVE + " to retrieve");
     System.out.println(HELP + " for help");
   }
 
@@ -125,19 +125,19 @@ public class UserInterface {
     System.out.println(result);
   }
 
-  public void addBooks() {
-    Book result;
+  public void addProducts() {
+    Product result;
     do {
-      String title = getToken("Enter  title");
-      String bookID = getToken("Enter id");
-      String author = getToken("Enter author");
-      result = library.addBook(title, author, bookID);
+      String name = getToken("Enter product name");
+      int quantity = getNumber("Enter quantity");
+      double price = Double.parseDouble(getToken("Enter Price"));
+      result = warehouse.addProduct(name, quantity, price);
       if (result != null) {
         System.out.println(result);
       } else {
-        System.out.println("Book could not be added");
+        System.out.println("Product could not be added");
       }
-      if (!yesOrNo("Add more books?")) {
+      if (!yesOrNo("Add more products?")) {
         break;
       }
     } while (true);
@@ -149,11 +149,10 @@ public class UserInterface {
       System.out.println("Dummy Action");
   }
 
-  public void showBooks() {
-      Iterator allBooks = library.getBooks();
-      while (allBooks.hasNext()){
-	  Book book = (Book)(allBooks.next());
-          System.out.println(book.toString());
+  public void showProducts() {
+      Iterator<Product> allProducts = warehouse.getProducts();
+      while (allProducts.hasNext()){
+          System.out.println(allProducts.next());
       }
   }
 
@@ -211,7 +210,7 @@ public class UserInterface {
       switch (command) {
         case ADD_MEMBER:        addMember();
                                 break;
-        case ADD_BOOKS:         addBooks();
+        case ADD_PRODUCTS:      addProducts();
                                 break;
         case ISSUE_BOOKS:       issueBooks();
                                 break;
@@ -233,16 +232,16 @@ public class UserInterface {
                                 break;
         case RETRIEVE:          retrieve();
                                 break;
-        case SHOW_MEMBERS:	showMembers();
+        case SHOW_MEMBERS:	    showMembers();
                                 break; 		
-        case SHOW_BOOKS:	showBooks();
+        case SHOW_PRODUCTS:	    showProducts();
                                 break; 		
         case HELP:              help();
                                 break;
       }
     }
   }
-  public static void main(String[] s) {
+  public static void main(String[] args) {
     UserInterface.instance().process();
   }
 }
